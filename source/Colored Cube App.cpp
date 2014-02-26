@@ -41,6 +41,8 @@ public:
 	void updateScene(float dt);
 	void drawScene(); 
 
+	void updateGameState();
+
 private:
 	void buildFX();
 	void buildVertexLayouts();
@@ -92,6 +94,8 @@ private:
 	float lastSwitch;
     std::wstring mTimer;
 	HRESULT hr;
+
+	GameStates gamestate;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -139,6 +143,7 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 	normalColor[0] = 0;
 	lastSwitch = 100;
 	timer = 100;
+	gamestate = Title;
 	D3DXMatrixIdentity(&mView);
 	D3DXMatrixIdentity(&mProj);
 	D3DXMatrixIdentity(&mWVP); 
@@ -272,10 +277,28 @@ void ColoredCubeApp::onResize()
 	D3DXMatrixPerspectiveFovLH(&mProj, 0.25f*PI, aspect, 1.0f, 1000.0f);
 }
 
+void ColoredCubeApp::updateGameState()
+{
+	if(gamestate == Title && (GetAsyncKeyState('E') & 0x8000))
+		gamestate = Gameplay;
+	if(multiplier <= 0)
+		gamestate = Retry;
+	if(gamestate == Retry && (GetAsyncKeyState('Y') & 0x8000))
+	{
+		multiplier = 1;
+		score = 0;
+		foo[0] = 0;
+		normalColor[0] = 0;
+		lastSwitch = 100;
+		timer = 100;
+		gamestate = Gameplay;
+	}
+}
+
 void ColoredCubeApp::updateScene(float dt)
 {
 	timer -= dt;
-    std::wostringstream outs;   
+	std::wostringstream outs;   
 	if(timer<=0)
 	{
 		outs.clear();
@@ -285,7 +308,7 @@ void ColoredCubeApp::updateScene(float dt)
 	}
 
 	outs.precision(2);
-    outs << L"Time: " << timer << L"\n";
+	outs << L"Time: " << timer << L"\n";
 	outs.precision(3);
 	outs << "Score: " << score;
 	mTimer = outs.str();
@@ -295,7 +318,6 @@ void ColoredCubeApp::updateScene(float dt)
 	auto oldSpot = shootCube.getPosition();
 	D3DApp::updateScene(dt);
 
-	
 	leftWall.update(dt);
 	//floor.update(dt);
 	rightWall.update(dt);
@@ -303,27 +325,6 @@ void ColoredCubeApp::updateScene(float dt)
 
 	hitCubes->update(dt);
 	avoidCubes->update(dt);
-
-	//from game jam
-	//if(((int)timer)%5==0)
-	//{
-	//	for(int i = 0; i < 20; i++)
-	//	{
-	//		if(!tiles[i].getActiveState())
-	//		{
-	//			tiles[i].setActive();
-	//			tiles[i].setPosition(Vector3((-5+rand()%10)*3,0,(-5+rand()%10)*3));
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//for(int i = 0; i < 20; i++)
-	//{
-	//	tiles[i].update(dt);
-	//	//wall[i].update(dt);
-	//}
-
 	shootCube.update(dt);
 
 	for(int i = 0; i < 20; i++)
@@ -369,6 +370,7 @@ void ColoredCubeApp::updateScene(float dt)
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&mView, &pos, &target, &up);
+
 }
 
 void ColoredCubeApp::drawScene()
@@ -406,7 +408,6 @@ void ColoredCubeApp::drawScene()
 	//floor.draw(mView, mProj, mTech);
 	leftWall.draw(mView, mProj, mTech);
 	//ceiling.draw(mView, mProj, mTech);
-
 
 	mfxFLIPVar->SetRawValue(&normalColor[0], 0, sizeof(int));
 	shootCube.draw(mView, mProj, mTech);
