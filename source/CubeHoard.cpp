@@ -73,7 +73,7 @@ void CubeHoard::update(float dt)
 				if(!attackers[j].getActiveState())
 				{
 					attackers[j].setActive();
-					attackers[j].setPosition(Vector3(((minX/3) + rand()%((maxX-minX)/3))*3,startY,((minZ/3) + rand()%((maxZ-minZ)/3))*3));
+					attackers[j].setPosition(Vector3(((minX/4) + rand()%((maxX-minX)/4))*4,startY,((minZ/4) + rand()%((maxZ-minZ)/4))*4));
 					break;
 				}
 			}

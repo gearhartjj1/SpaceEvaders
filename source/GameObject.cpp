@@ -40,7 +40,7 @@ void GameObject::init(Box *b, ID3D10EffectMatrixVariable* fx, float r, Vector3 p
 	mfxWVPVar = fx;
 	box = b;
 	radius = r * s.x;
-	radius *= 1.3; //fudge factor
+	radius *= 1.1; //fudge factor
 	position = pos;
 	velocity = vel;
 	speed = sp;
