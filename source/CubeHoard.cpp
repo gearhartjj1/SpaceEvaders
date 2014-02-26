@@ -1,23 +1,38 @@
 #include "CubeHoard.h"
 
-CubeHoard::CubeHoard(int numBoxes, int maxAtTime,int minAtTime, double levelTime, double fInterval, int minX, int maxX, int minZ, int maxZ, int startY, int endY)
+HoardData::HoardData()
 {
-	attackers = new GameObject[numBoxes];
-	numB = numBoxes;
+	numBoxes = 10;
+	maxAtTime = 1;
+	minAtTime = 10;
+	levelTime = -1;
+	fireInterval = 5;
+	minX = -20;
+	maxX = 20;
+	minZ = -20;
+	maxZ = 20;
+	startY = -100;
+	endY = 40;
+}
+
+CubeHoard::CubeHoard(HoardData data)
+{
+	attackers = new GameObject[data.numBoxes];
+	numB = data.numBoxes;
 	numActive = 0;
-	fireInterval = fInterval;
+	fireInterval = data.fireInterval;
 	lastFire = 0;
 	timer = 0;
 	lastUpdate = 0;
-	this->minX = minX;
-	this->maxX = maxX;
-	this->minZ = minZ;
-	this->maxZ = maxZ;
-	this->startY = startY;
-	this->endY = endY;
-	this->numSent = maxAtTime;
-	this->minSent = minAtTime;
-	this->levelTime = levelTime;
+	this->minX = data.minX;
+	this->maxX = data.maxX;
+	this->minZ = data.minZ;
+	this->maxZ = data.maxZ;
+	this->startY = data.startY;;
+	this->endY = data.endY;
+	this->numSent = data.maxAtTime;
+	this->minSent = data.minAtTime;
+	this->levelTime = data.levelTime;
 }
 
 CubeHoard::~CubeHoard()
@@ -58,7 +73,7 @@ void CubeHoard::update(float dt)
 				if(!attackers[j].getActiveState())
 				{
 					attackers[j].setActive();
-					attackers[j].setPosition(Vector3(minX + rand()%(maxX-minX),startY,minZ + rand()%(maxZ-minZ)));
+					attackers[j].setPosition(Vector3(((minX/3) + rand()%((maxX-minX)/3))*3,startY,((minZ/3) + rand()%((maxZ-minZ)/3))*3));
 					break;
 				}
 			}

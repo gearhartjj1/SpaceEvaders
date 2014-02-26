@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 Vector3 ColoredCubeApp::moveCube()
 {
 	Vector3 direction = Vector3(0,0,0);
-	int playerSpeed = 30;
+	int playerSpeed = 20;
 
 	if(GetAsyncKeyState('A') & 0x8000) direction.x = 1;
 	if(GetAsyncKeyState('D') & 0x8000) direction.x = -1;
@@ -130,7 +130,7 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
   mfxWVPVar(0), mTheta(0.0f), mPhi(PI*0.25f)
 {
 	score = 0;
-	timer = 30;
+	timer = 100;
 	D3DXMatrixIdentity(&mView);
 	D3DXMatrixIdentity(&mProj);
 	D3DXMatrixIdentity(&mWVP); 
@@ -218,10 +218,36 @@ void ColoredCubeApp::initApp()
         }
     }
 
-	hitCubes = new CubeHoard(100,10,5,5,1,-15,15,-15,15,-100,40);
+	HoardData hitCubeData;
+	hitCubeData.numBoxes = 100;//total cubes available to the hoard
+	hitCubeData.maxAtTime = 10;//max number of cubes that can be sent at a time
+	hitCubeData.minAtTime = 5;//min number of cubes that can be sent at a time
+	hitCubeData.levelTime = 20;//time between difficulty increasing in seconds
+	hitCubeData.fireInterval = 3;//number of seconds between cubes firing
+	hitCubeData.minX = -15;//min point where cubes appear in the x direction
+	hitCubeData.maxX = 15;//max point where cubes appear in the x direction
+	hitCubeData.minZ = -15;//min point where cubes appear in the z direction
+	hitCubeData.maxZ = 15;//max point where cubes appear in the z direction
+	hitCubeData.startY = -100;//starting point of cubes in the y direction
+	hitCubeData.endY = 40;//end point of cubes in the y direction, so where cubes disappear
+
+	hitCubes = new CubeHoard(hitCubeData);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
-	avoidCubes = new CubeHoard(100,20,10,10,1,-20,20,-20,20,-100,50);
+	HoardData avoidCubeData;
+	avoidCubeData.numBoxes = 100;
+	avoidCubeData.maxAtTime = 20;
+	avoidCubeData.minAtTime = 10;
+	avoidCubeData.levelTime = 20;
+	avoidCubeData.fireInterval = 3;
+	avoidCubeData.minX = -20;
+	avoidCubeData.maxX = 20;
+	avoidCubeData.minZ = -20;
+	avoidCubeData.maxZ = 20;
+	avoidCubeData.startY = -100;
+	avoidCubeData.endY = 50;
+
+	avoidCubes = new CubeHoard(avoidCubeData);
 	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
 	audio->playCue(MUSIC);

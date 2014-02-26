@@ -2,11 +2,28 @@
 
 #include "GameObject.h"
 
+//struct for hoard information
+struct HoardData
+{
+	HoardData();
+	int numBoxes;
+	int maxAtTime;
+	int minAtTime;
+	double levelTime;
+	double fireInterval;
+	int minX;
+	int maxX;
+	int minZ;
+	int maxZ;
+	int startY;
+	int endY;
+};
+
 //make levelTime negative to prevent the cube variables from changing
 class CubeHoard
 {
 public:
-	CubeHoard(int numBoxes, int maxAtTime,int minAtTime, double levelTime, double fireInterval,int minX, int maxX, int minZ, int maxZ, int startY,int endY);
+	CubeHoard(HoardData data);
 	~CubeHoard();
 	void init(Box *b, ID3D10EffectMatrixVariable* fx, float r, Vector3 pos, Vector3 vel, float sp, Vector3 s);
 	void draw(D3DXMATRIX model, D3DXMATRIX projection, ID3D10EffectTechnique* technique);
