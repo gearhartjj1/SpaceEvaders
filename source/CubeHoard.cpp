@@ -1,6 +1,6 @@
 #include "CubeHoard.h"
 
-CubeHoard::CubeHoard(int numBoxes, double fInterval, int minX, int maxX, int minZ, int maxZ, int startY, int endY)
+CubeHoard::CubeHoard(int numBoxes, int maxAtTime,int minAtTime, double levelTime, double fInterval, int minX, int maxX, int minZ, int maxZ, int startY, int endY)
 {
 	attackers = new GameObject[numBoxes];
 	numB = numBoxes;
@@ -8,12 +8,16 @@ CubeHoard::CubeHoard(int numBoxes, double fInterval, int minX, int maxX, int min
 	fireInterval = fInterval;
 	lastFire = 0;
 	timer = 0;
+	lastUpdate = 0;
 	this->minX = minX;
 	this->maxX = maxX;
 	this->minZ = minZ;
 	this->maxZ = maxZ;
 	this->startY = startY;
 	this->endY = endY;
+	this->numSent = maxAtTime;
+	this->minSent = minAtTime;
+	this->levelTime = levelTime;
 }
 
 CubeHoard::~CubeHoard()
@@ -45,11 +49,19 @@ void CubeHoard::update(float dt)
 	if((timer-lastFire)>fireInterval)
 	{
 		lastFire = timer;
-		int fire = rand()%numB;
-		if(!attackers[fire].getActiveState())
+		int send = minSent + rand()%numSent;
+		for(int i = 0; i < send; i++)
 		{
-			attackers[fire].setActive();
-			attackers[fire].setPosition(Vector3(minX + rand()%(maxX-minX),startY,minZ + rand()%(maxZ-minZ)));
+			//might not be the best implementation for this
+			for(int j = 0; j < numB; j++)
+			{
+				if(!attackers[j].getActiveState())
+				{
+					attackers[j].setActive();
+					attackers[j].setPosition(Vector3(minX + rand()%(maxX-minX),startY,minZ + rand()%(maxZ-minZ)));
+					break;
+				}
+			}
 		}
 		//numActive++;
 	}
@@ -67,6 +79,13 @@ void CubeHoard::update(float dt)
 				attackers[i].setInActive();
 			}
 		}
+	}
+
+	if(levelTime>0 && (timer-lastUpdate)>levelTime)
+	{
+		lastUpdate = timer;
+		fireInterval*=0.9;
+		numSent++;
 	}
 }
 

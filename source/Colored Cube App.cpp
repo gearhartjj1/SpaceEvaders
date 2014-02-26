@@ -54,6 +54,7 @@ private:
 	Box mBox, redBox, greenBox, shootBox;
 
 	CubeHoard* hitCubes;
+	CubeHoard* avoidCubes;
 
 	GameObject floor, leftWall, rightWall, ceiling;
 	GameObject tiles[20];
@@ -217,8 +218,11 @@ void ColoredCubeApp::initApp()
         }
     }
 
-	hitCubes = new CubeHoard(10,1,-15,15,-15,15,-100,40);
+	hitCubes = new CubeHoard(100,10,5,5,1,-15,15,-15,15,-100,40);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
+
+	avoidCubes = new CubeHoard(100,20,10,10,1,-20,20,-20,20,-100,50);
+	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
 	audio->playCue(MUSIC);
 
@@ -264,6 +268,7 @@ void ColoredCubeApp::updateScene(float dt)
 	//ceiling.update(dt);
 
 	hitCubes->update(dt);
+	avoidCubes->update(dt);
 
 	//from game jam
 	//if(((int)timer)%5==0)
@@ -307,9 +312,17 @@ void ColoredCubeApp::updateScene(float dt)
 
 	score+=numHits;
 
+	int numBadHits = avoidCubes->checkCollisions(shootCube);
+	score-=numBadHits;
+
 	if(numHits>0)
 	{
 		audio->playCue(GUN_SHOT);
+	}
+
+	if(numBadHits>0)
+	{
+		audio->playCue(TARGET_SHATTER);
 	}
 
 	if(shootCube.getPosition().x<-18 || shootCube.getPosition().x>18 || shootCube.getPosition().z<-18 || shootCube.getPosition().z>18)
@@ -354,6 +367,8 @@ void ColoredCubeApp::drawScene()
 	shootCube.draw(mView, mProj, mTech);
 
 	hitCubes->draw(mView,mProj,mTech);
+
+	avoidCubes->draw(mView,mProj,mTech);
 
 	//for(int i = 0; i < 20; i++)
 	//{
