@@ -24,13 +24,13 @@ void GameObject::draw(D3DXMATRIX model, D3DXMATRIX projection, ID3D10EffectTechn
 	//handle to matrix variable in the shader
 	mfxWVPVar->SetMatrix((float*)&mWVP);
 	//sets the technique
-	setMTech(technique);
+	//setMTech(technique);
 
     D3D10_TECHNIQUE_DESC techDesc;
-    mTech->GetDesc( &techDesc );
+    technique->GetDesc( &techDesc );
     for(UINT p = 0; p < techDesc.Passes; ++p)
     {
-        mTech->GetPassByIndex( p )->Apply(0);
+        technique->GetPassByIndex( p )->Apply(0);
         box->draw();
     }
 }
@@ -40,7 +40,7 @@ void GameObject::init(Box *b, ID3D10EffectMatrixVariable* fx, float r, Vector3 p
 	mfxWVPVar = fx;
 	box = b;
 	radius = r * s.x;
-	radius *= 1.1; //fudge factor
+	radius *= 0.9; //fudge factor
 	position = pos;
 	velocity = vel;
 	speed = sp;

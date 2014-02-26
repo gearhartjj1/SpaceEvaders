@@ -49,7 +49,10 @@ private:
 	Audio* audio;
 	//Input* input;
 	float score;
+	int multiplier;
 	Quad quad1;
+	int foo[1];
+	int normalColor[1];
 	Line line, line2, line3;
 	Box mBox, redBox, greenBox, shootBox;
 
@@ -86,6 +89,7 @@ private:
 	float mPhi;
 
     float timer;
+	float lastSwitch;
     std::wstring mTimer;
 	HRESULT hr;
 };
@@ -129,7 +133,11 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mFX(0), mTech(0), mVertexLayout(0),
   mfxWVPVar(0), mTheta(0.0f), mPhi(PI*0.25f)
 {
+	multiplier = 1;
 	score = 0;
+	foo[0] = 0;
+	normalColor[0] = 0;
+	lastSwitch = 100;
 	timer = 100;
 	D3DXMatrixIdentity(&mView);
 	D3DXMatrixIdentity(&mProj);
@@ -376,8 +384,17 @@ void ColoredCubeApp::drawScene()
     md3dDevice->IASetInputLayout(mVertexLayout);
 
 	// set some variables for the shader
-	int foo[1];
-	foo[0] = 0;
+	//int foo[1];
+	//foo[0] = 2;
+	if((lastSwitch-timer)>1)
+	{
+		lastSwitch = timer;
+		foo[0]++;
+		if(foo[0]>3)
+		{
+			foo[0] = 0;
+		}
+	}
 	// set the point to the shader technique
 	D3D10_TECHNIQUE_DESC techDesc;
 	mTech->GetDesc(&techDesc);
@@ -390,6 +407,8 @@ void ColoredCubeApp::drawScene()
 	leftWall.draw(mView, mProj, mTech);
 	//ceiling.draw(mView, mProj, mTech);
 
+
+	mfxFLIPVar->SetRawValue(&normalColor[0], 0, sizeof(int));
 	shootCube.draw(mView, mProj, mTech);
 
 	hitCubes->draw(mView,mProj,mTech);
@@ -403,7 +422,7 @@ void ColoredCubeApp::drawScene()
 	//}
 
 	//draw the origin
-	origin.draw(mView, mProj, mTech);
+	//origin.draw(mView, mProj, mTech);
      
 	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 	RECT R = {5, 5, 0, 0};

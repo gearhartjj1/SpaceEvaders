@@ -33,7 +33,7 @@ public:
 	void setActive() {active = true;}
 	void setInActive() {active = false;}
 	bool getActiveState() {return active;}
-	void setMTech(ID3D10EffectTechnique* m){ mTech = m;}
+	//void setMTech(ID3D10EffectTechnique* m){ mTech = m;}
 	bool collided(GameObject *gameObject);
 
 	void setRotation(Vector3 r) {rotation = r;}
@@ -52,7 +52,7 @@ private:
 	bool active;
 	Matrix world;
 	Vector3 scale;
-	ID3D10EffectTechnique* mTech;
+	//ID3D10EffectTechnique* mTech;
 	ID3D10EffectMatrixVariable* mfxWVPVar;
 	D3DXMATRIX mWVP;
 };
