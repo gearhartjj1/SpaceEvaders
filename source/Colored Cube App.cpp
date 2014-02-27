@@ -67,6 +67,8 @@ private:
 	CubeHoard* powerCubes;
 	HoardData powerCubeData;
 
+	int mouseX, mouseY;
+
 	GameObject floor, leftWall, rightWall, ceiling;
 	GameObject tiles[20];
 	GameObject wall[20];
@@ -128,12 +130,22 @@ Vector3 ColoredCubeApp::moveCube()
 	Vector3 direction = Vector3(0,0,0);
 	int playerSpeed = 20;
 
-	if(GetAsyncKeyState('A') & 0x8000) direction.x = 1;
-	if(GetAsyncKeyState('D') & 0x8000) direction.x = -1;
-	if(GetAsyncKeyState('W') & 0x8000) direction.z = -1;
-	if(GetAsyncKeyState('S') & 0x8000) direction.z = 1;
-	//if(GetAsyncKeyState('O') & 0x8000) direction.y = 1;
-	//if(GetAsyncKeyState('L') & 0x8000) direction.y = -1;
+	if (mouseX == input->getMouseX() || mouseY == input->getMouseY()) {
+		if(GetAsyncKeyState('A') & 0x8000) direction.x = 1;
+		if(GetAsyncKeyState('D') & 0x8000) direction.x = -1;
+		if(GetAsyncKeyState('W') & 0x8000) direction.z = -1;
+		if(GetAsyncKeyState('S') & 0x8000) direction.z = 1;
+		//if(GetAsyncKeyState('O') & 0x8000) direction.y = 1;
+		//if(GetAsyncKeyState('L') & 0x8000) direction.y = -1;
+	} else {
+		float x = -16.0f + (static_cast<float>(mouseX) / 800.0f * 32.0f);
+		float y = -12.0f + (static_cast<float>(mouseY) / 600.0f * 24.0f);
+
+		shootCube.setPosition(D3DXVECTOR3(x * -1, 20, y));
+	}
+
+	mouseX = input->getMouseX();
+	mouseY = input->getMouseY();
 
 	if(direction!=Vector3(0,0,0))
 		D3DXVec3Normalize(&direction,&direction);
@@ -141,6 +153,7 @@ Vector3 ColoredCubeApp::moveCube()
 	direction *= playerSpeed;
 	return direction;
 }
+
 
 ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mFX(0), mTech(0), mVertexLayout(0),
@@ -348,9 +361,9 @@ void ColoredCubeApp::updateScene(float dt)
 		outs2 << L"             Space Evaders\n\n\n";
 		outs2 << L"Avoid the blue cubes to survive.\nHit grey cubes for bigger multiplier.\nHit multicolored cubes for intensity reduction.\n";
 		outs2 << L"If your multiplier hits 0 then its game over!\n";
-		outs2 << L"WS to move up and down.\nAD to move left and right.";
+		outs2 << L"WS to move up and down.\nAD to move left and right.\nOr use the mouse";
 		mIntro = outs2.str();
-		outs << L"Press E to play";
+		outs << L"\n\nPress E to play";
 		mTimer = outs.str();
 	}
 	if(gamestate == Gameplay)
