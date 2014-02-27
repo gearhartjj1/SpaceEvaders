@@ -365,7 +365,8 @@ void ColoredCubeApp::updateScene(float dt)
 		multiplier -= numBadHits;
 
 		int numPowerHits = powerCubes->checkCollisions(shootCube);
-		avoidCubeData.fireInterval*=1.1;
+		if(numPowerHits == 1)
+			avoidCubeData.fireInterval*=1.1;
 		//do stuff with this!!!
 
 		if(numHits>0)
