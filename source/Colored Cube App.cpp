@@ -60,6 +60,7 @@ private:
 
 	CubeHoard* hitCubes;
 	CubeHoard* avoidCubes;
+	CubeHoard* powerCubes;
 
 	GameObject floor, leftWall, rightWall, ceiling;
 	GameObject tiles[20];
@@ -264,6 +265,12 @@ void ColoredCubeApp::initApp()
 	avoidCubes = new CubeHoard(avoidCubeData);
 	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
+	HoardData powerCubeData;
+	//adjust these Values!!!
+
+	powerCubes = new CubeHoard(powerCubeData);
+	powerCubes->init(&shootBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(1,1,1));
+
 	audio->playCue(MUSIC);
 
 	//input->initialize(this->getMainWnd(), false);  
@@ -327,6 +334,7 @@ void ColoredCubeApp::updateScene(float dt)
 
 		hitCubes->update(dt);
 		avoidCubes->update(dt);
+		powerCubes->update(dt);
 		shootCube.update(dt);
 	
 		int numHits = hitCubes->checkCollisions(shootCube);
@@ -334,6 +342,9 @@ void ColoredCubeApp::updateScene(float dt)
 
 		int numBadHits = avoidCubes->checkCollisions(shootCube);
 		multiplier -= numBadHits;
+
+		int numPowerHits = powerCubes->checkCollisions(shootCube);
+		//do stuff with this!!!
 
 		if(numHits>0)
 		{
@@ -416,6 +427,8 @@ void ColoredCubeApp::drawScene()
 		hitCubes->draw(mView,mProj,mTech);
 
 		avoidCubes->draw(mView,mProj,mTech);
+
+		powerCubes->draw(mView,mProj,mTech);
 
 		//for(int i = 0; i < 20; i++)
 		//{
