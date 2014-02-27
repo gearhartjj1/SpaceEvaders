@@ -356,6 +356,8 @@ void ColoredCubeApp::updateScene(float dt)
 		timer -= dt;
 		//outs.precision(4);
 		outs << L"Score: " << score << L"\n";
+		outs2 << L"Intensity Level: " << level;
+		mIntro = outs2.str();
 		//outs.precision(3);
 		outs << "Multiplier: " << multiplier;
 		mTimer = outs.str();
@@ -514,7 +516,9 @@ void ColoredCubeApp::drawScene()
      
 		// We specify DT_NOCLIP, so we do not care about width/height of the rect.
 		RECT R = {5, 5, 0, 0};
+		RECT R2 = {GAME_WIDTH - 180, 5, 0, 0};
 		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+		mFont->DrawText(0, mIntro.c_str(), -1, &R2, DT_NOCLIP, BLUE);
 	}
 	if(gamestate == Retry)
 	{
