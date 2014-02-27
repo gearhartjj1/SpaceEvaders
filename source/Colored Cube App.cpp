@@ -260,9 +260,9 @@ void ColoredCubeApp::initApp()
 	hitCubes = new CubeHoard(hitCubeData);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
-	avoidCubeData.numBoxes = 150;
-	avoidCubeData.maxAtTime = 40;
-	avoidCubeData.minAtTime = 30;
+	avoidCubeData.numBoxes = 100;
+	avoidCubeData.maxAtTime = 33;
+	avoidCubeData.minAtTime = 20;
 	avoidCubeData.levelTime = 10;
 	avoidCubeData.fireInterval = 2;
 	avoidCubeData.minX = -20;
@@ -347,6 +347,7 @@ void ColoredCubeApp::updateScene(float dt)
 		outs2.clear();
 		outs2 << L"             Space Evaders\n\n\n";
 		outs2 << L"Avoid the blue cubes to survive.\nHit grey cubes for bigger multiplier.\nHit multicolored cubes for intensity reduction.\n";
+		outs2 << L"If your multiplier hits 0 then its game over!\n";
 		outs2 << L"WS to move up and down.\nAD to move left and right.";
 		mIntro = outs2.str();
 		outs << L"Press E to play";
