@@ -99,6 +99,7 @@ private:
 	float lastSwitch;
 	float lastSwitchSpecialBlock;
     std::wstring mTimer;
+	std::wstring mIntro;
 	HRESULT hr;
 
 	GameStates gamestate;
@@ -331,10 +332,15 @@ void ColoredCubeApp::updateGameState()
 void ColoredCubeApp::updateScene(float dt)
 {
 	updateGameState();
-	std::wostringstream outs;  
+	std::wostringstream outs, outs2;  
 	if(gamestate == Title)
 	{
 		outs.clear();
+		outs2.clear();
+		outs2 << L"             Space Evaders\n\n\n";
+		outs2 << L"Avoid the blue cubes to survive.\nHit grey cubes for bigger multiplier.\nHit multicolored cubes for buff.\n";
+		outs2 << L"WS to move up and down.\nAD to move left and right.";
+		mIntro = outs2.str();
 		outs << L"Press E to play";
 		mTimer = outs.str();
 	}
@@ -398,6 +404,7 @@ void ColoredCubeApp::updateScene(float dt)
 	if(gamestate == Retry)
 	{
 		outs.clear();
+		outs << L"Score: " << score << L"\n";
 		outs << L"Press Y to play again";
 		mTimer = outs.str();
 		avoidCubes->reset();
@@ -456,7 +463,9 @@ void ColoredCubeApp::drawScene()
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
 	if(gamestate == Title)
 	{
-		RECT R = {GAME_WIDTH/2 - 60, GAME_HEIGHT/2, 0, 0};
+		RECT R = {GAME_WIDTH/2 - 60, GAME_HEIGHT/2 + 60, 0, 0};
+		RECT R2 = {GAME_WIDTH/2 - 130, GAME_HEIGHT/4, 0, 0};
+		mFont->DrawText(0, mIntro.c_str(), -1, &R2, DT_NOCLIP, BLUE);
 		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
 	}
 	if(gamestate == Gameplay)
