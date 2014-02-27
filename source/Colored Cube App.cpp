@@ -137,15 +137,18 @@ Vector3 ColoredCubeApp::moveCube()
 		if(GetAsyncKeyState('S') & 0x8000) direction.z = 1;
 		//if(GetAsyncKeyState('O') & 0x8000) direction.y = 1;
 		//if(GetAsyncKeyState('L') & 0x8000) direction.y = -1;
+
+		mouseX = input->getMouseX();
+		mouseY = input->getMouseY();
 	} else {
+		mouseX = input->getMouseX();
+		mouseY = input->getMouseY();
+
 		float x = -16.0f + (static_cast<float>(mouseX) / 800.0f * 32.0f);
 		float y = -12.0f + (static_cast<float>(mouseY) / 600.0f * 24.0f);
 
-		shootCube.setPosition(D3DXVECTOR3(x * -1, 20, y));
+		shootCube.setPosition(D3DXVECTOR3(x * -1, 20, y)); // * -1, hee hee
 	}
-
-	mouseX = input->getMouseX();
-	mouseY = input->getMouseY();
 
 	if(direction!=Vector3(0,0,0))
 		D3DXVec3Normalize(&direction,&direction);
@@ -195,6 +198,9 @@ void ColoredCubeApp::initApp()
 	
 	buildFX();
 	buildVertexLayouts();
+
+	mouseX = input->getMouseX();
+	mouseY = input->getMouseY();
 
 	mBox.init(md3dDevice, 1.0f, D3DXCOLOR(0.5,0.5,0.5,1));
 	redBox.init(md3dDevice, 1.0f, DARKBROWN);
