@@ -13,10 +13,12 @@ HoardData::HoardData()
 	maxZ = 20;
 	startY = -100;
 	endY = 40;
+	startTime = 0;
 }
 
 CubeHoard::CubeHoard(HoardData data)
 {
+	original = data;
 	attackers = new GameObject[data.numBoxes];
 	numB = data.numBoxes;
 	numActive = 0;
@@ -33,6 +35,7 @@ CubeHoard::CubeHoard(HoardData data)
 	this->numSent = data.maxAtTime;
 	this->minSent = data.minAtTime;
 	this->levelTime = data.levelTime;
+	this->startTime = data.startTime;
 }
 
 CubeHoard::~CubeHoard()
@@ -61,7 +64,7 @@ void CubeHoard::update(float dt)
 {
 	//need to work on the timer
 	timer+=dt;
-	if((timer-lastFire)>fireInterval)
+	if(timer>startTime && (timer-lastFire)>fireInterval)
 	{
 		lastFire = timer;
 		int send = minSent + rand()%numSent;
@@ -119,4 +122,14 @@ int CubeHoard::checkCollisions(GameObject& object)
 		}
 	}
 	return numHits;
+}
+
+void CubeHoard::reset()
+{
+	for(int i = 0; i < numB; i++)
+	{
+		fireInterval = original.fireInterval;
+		numSent = original.maxAtTime;
+		attackers[i].setInActive();
+	}
 }

@@ -6,6 +6,7 @@
 struct HoardData
 {
 	HoardData();
+	double startTime;
 	int numBoxes;
 	int maxAtTime;
 	int minAtTime;
@@ -27,14 +28,17 @@ public:
 	~CubeHoard();
 	void init(Box *b, ID3D10EffectMatrixVariable* fx, float r, Vector3 pos, Vector3 vel, float sp, Vector3 s);
 	void draw(D3DXMATRIX model, D3DXMATRIX projection, ID3D10EffectTechnique* technique);
+	void reset();
 	void update(float dt);
 	int checkCollisions(GameObject& object);
 private:
 	GameObject* attackers;
+	HoardData original;
 	int numB;
 	int numActive;
 	int numSent;
 	int minSent;
+	double startTime;
 	double fireInterval;
 	double lastFire;
 	float timer;
