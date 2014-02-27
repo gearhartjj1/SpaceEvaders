@@ -411,6 +411,7 @@ void ColoredCubeApp::updateScene(float dt)
 		mTimer = outs.str();
 		avoidCubes->reset();
 		hitCubes->reset();
+		powerCubes->reset();
 		shootCube.setPosition(Vector3(0,20,0));
 	}
 	// Build the view matrix.
