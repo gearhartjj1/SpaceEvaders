@@ -138,7 +138,7 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mFX(0), mTech(0), mVertexLayout(0),
   mfxWVPVar(0), mTheta(0.0f), mPhi(PI*0.25f)
 {
-	multiplier = 1;
+	multiplier = 5;
 	score = 0;
 	foo[0] = 0;
 	normalColor[0] = 0;
@@ -233,10 +233,10 @@ void ColoredCubeApp::initApp()
     }
 
 	HoardData hitCubeData;
-	hitCubeData.numBoxes = 100;//total cubes available to the hoard
-	hitCubeData.maxAtTime = 10;//max number of cubes that can be sent at a time
-	hitCubeData.minAtTime = 5;//min number of cubes that can be sent at a time
-	hitCubeData.levelTime = 20;//time between difficulty increasing in seconds
+	hitCubeData.numBoxes = 20;//total cubes available to the hoard
+	hitCubeData.maxAtTime = 6;//max number of cubes that can be sent at a time
+	hitCubeData.minAtTime = 2;//min number of cubes that can be sent at a time
+	hitCubeData.levelTime = -1;//time between difficulty increasing in seconds
 	hitCubeData.fireInterval = 3;//number of seconds between cubes firing
 	hitCubeData.minX = -15;//min point where cubes appear in the x direction
 	hitCubeData.maxX = 15;//max point where cubes appear in the x direction
@@ -251,8 +251,8 @@ void ColoredCubeApp::initApp()
 
 	HoardData avoidCubeData;
 	avoidCubeData.numBoxes = 100;
-	avoidCubeData.maxAtTime = 20;
-	avoidCubeData.minAtTime = 10;
+	avoidCubeData.maxAtTime = 30;
+	avoidCubeData.minAtTime = 15;
 	avoidCubeData.levelTime = 20;
 	avoidCubeData.fireInterval = 3;
 	avoidCubeData.minX = -20;
@@ -266,6 +266,18 @@ void ColoredCubeApp::initApp()
 	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
 	HoardData powerCubeData;
+	powerCubeData.numBoxes = 10;
+	powerCubeData.maxAtTime = 5;
+	powerCubeData.minAtTime = 1;
+	powerCubeData.levelTime = 40;
+	powerCubeData.fireInterval = 5;
+	powerCubeData.minX = -20;
+	powerCubeData.maxX = 20;
+	powerCubeData.minZ = -20;
+	powerCubeData.maxZ = 20;
+	powerCubeData.startY = -100;
+	powerCubeData.endY = 50;
+	powerCubeData.startTime = 10;
 	//adjust these Values!!!
 
 	powerCubes = new CubeHoard(powerCubeData);
