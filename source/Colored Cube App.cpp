@@ -54,6 +54,7 @@ private:
 	int multiplier;
 	Quad quad1;
 	int foo[1];
+	int level;
 	int normalColor[1];
 	int specialColor[1];
 	Line line, line2, line3;
@@ -98,6 +99,7 @@ private:
     float timer;
 	float lastSwitch;
 	float lastSwitchSpecialBlock;
+	float levelSwitch;
     std::wstring mTimer;
 	std::wstring mIntro;
 	HRESULT hr;
@@ -144,12 +146,14 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 : D3DApp(hInstance), mFX(0), mTech(0), mVertexLayout(0),
   mfxWVPVar(0), mTheta(0.0f), mPhi(PI*0.25f)
 {
+	level = 1;
 	multiplier = 5;
 	score = 0;
 	foo[0] = 0;
 	normalColor[0] = 0;
 	specialColor[0] = 0;
 	lastSwitch = 100;
+	levelSwitch = 100;
 	lastSwitchSpecialBlock = 100;
 	timer = 100;
 	gamestate = Title;
@@ -243,7 +247,7 @@ void ColoredCubeApp::initApp()
 	hitCubeData.numBoxes = 20;//total cubes available to the hoard
 	hitCubeData.maxAtTime = 6;//max number of cubes that can be sent at a time
 	hitCubeData.minAtTime = 2;//min number of cubes that can be sent at a time
-	hitCubeData.levelTime = -1;//time between difficulty increasing in seconds
+	hitCubeData.levelTime = 40;//time between difficulty increasing in seconds
 	hitCubeData.fireInterval = 3;//number of seconds between cubes firing
 	hitCubeData.minX = -15;//min point where cubes appear in the x direction
 	hitCubeData.maxX = 15;//max point where cubes appear in the x direction
@@ -275,7 +279,7 @@ void ColoredCubeApp::initApp()
 	powerCubeData.maxAtTime = 5;
 	powerCubeData.minAtTime = 1;
 	powerCubeData.levelTime = 40;
-	powerCubeData.fireInterval = 5;
+	powerCubeData.fireInterval = 8;
 	powerCubeData.minX = -20;
 	powerCubeData.maxX = 20;
 	powerCubeData.minZ = -20;
@@ -325,6 +329,7 @@ void ColoredCubeApp::updateGameState()
 		specialColor[0] = 0;
 		lastSwitch = 100;
 		lastSwitchSpecialBlock = 100;
+		levelSwitch = 100;
 		timer = 100;
 		gamestate = Gameplay;
 		audio->playCue(MUSIC);
@@ -371,20 +376,22 @@ void ColoredCubeApp::updateScene(float dt)
 		shootCube.update(dt);
 	
 		int numHits = hitCubes->checkCollisions(shootCube);
-		multiplier += numHits;
+		if(multiplier<40)
+			multiplier += numHits;
 
 		int numBadHits = avoidCubes->checkCollisions(shootCube);
 		multiplier -= numBadHits;
 
 		int numPowerHits = powerCubes->checkCollisions(shootCube);
-		if(numPowerHits > 0 )
+		if(numPowerHits > 0 && level>1)
 		{
 			audio->playCue(SPECIAL);
-			avoidCubes->fireInterval*=1.5;
+			avoidCubes->fireInterval*=1.1;
 			if(avoidCubes->numSent-1 > avoidCubes->minSent)
 			{
 				avoidCubes->numSent--;
 			}
+			level--;
 		}
 		//do stuff with this!!!
 
@@ -446,6 +453,12 @@ void ColoredCubeApp::drawScene()
 			foo[0] = 0;
 		}
 		score += multiplier;
+	}
+
+	if((levelSwitch-timer)>20)
+	{
+		levelSwitch = timer;
+		level++;
 	}
 
 	if((lastSwitchSpecialBlock-timer)>0.1)
