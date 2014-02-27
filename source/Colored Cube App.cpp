@@ -309,9 +309,9 @@ void ColoredCubeApp::updateScene(float dt)
 	if(gamestate == Gameplay)
 	{
 		timer -= dt;
-		outs.precision(2);
+		//outs.precision(4);
 		outs << L"Score: " << score << L"\n";
-		outs.precision(3);
+		//outs.precision(3);
 		outs << "Multiplier: " << multiplier;
 		mTimer = outs.str();
 
@@ -390,6 +390,7 @@ void ColoredCubeApp::drawScene()
 		{
 			foo[0] = 0;
 		}
+		score += multiplier;
 	}
 	// set the point to the shader technique
 	D3D10_TECHNIQUE_DESC techDesc;
