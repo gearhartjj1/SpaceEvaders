@@ -31,15 +31,15 @@ public:
 	void reset();
 	void update(float dt);
 	int checkCollisions(GameObject& object);
+	double fireInterval;
+	int minSent;
+	int numSent;
 private:
 	GameObject* attackers;
 	HoardData original;
 	int numB;
 	int numActive;
-	int numSent;
-	int minSent;
 	double startTime;
-	double fireInterval;
 	double lastFire;
 	float timer;
 	double levelTime;

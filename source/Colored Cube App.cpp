@@ -365,8 +365,15 @@ void ColoredCubeApp::updateScene(float dt)
 		multiplier -= numBadHits;
 
 		int numPowerHits = powerCubes->checkCollisions(shootCube);
-		if(numPowerHits == 1)
-			avoidCubeData.fireInterval*=1.1;
+		if(numPowerHits > 0 )
+		{
+			audio->playCue(SPECIAL);
+			avoidCubes->fireInterval*=1.5;
+			if(avoidCubes->numSent-1 > avoidCubes->minSent)
+			{
+				avoidCubes->numSent--;
+			}
+		}
 		//do stuff with this!!!
 
 		if(numHits>0)
