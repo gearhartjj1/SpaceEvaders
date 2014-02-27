@@ -297,74 +297,73 @@ void ColoredCubeApp::updateGameState()
 
 void ColoredCubeApp::updateScene(float dt)
 {
-	timer -= dt;
-	std::wostringstream outs;   
-	if(timer<=0)
+	updateGameState();
+	std::wostringstream outs;  
+	if(gamestate == Title)
 	{
 		outs.clear();
-		outs << L"GAME OVER\nFINAL SCORE: " << score;
+		outs << L"Press E to play";
 		mTimer = outs.str();
-		return;
 	}
-
-	outs.precision(2);
-	outs << L"Time: " << timer << L"\n";
-	outs.precision(3);
-	outs << "Score: " << score;
-	mTimer = outs.str();
-
-	//store old position and reset it if collide, very hackish
-	shootCube.setVelocity(moveCube());
-	auto oldSpot = shootCube.getPosition();
-	D3DApp::updateScene(dt);
-
-	leftWall.update(dt);
-	//floor.update(dt);
-	rightWall.update(dt);
-	//ceiling.update(dt);
-
-	hitCubes->update(dt);
-	avoidCubes->update(dt);
-	shootCube.update(dt);
-
-	for(int i = 0; i < 20; i++)
+	if(gamestate == Gameplay)
 	{
-		if(shootCube.collided(&tiles[i]))
+		timer -= dt;
+		if(timer<=0)
 		{
-			tiles[i].setInActive();
-			score++;
-			audio->playCue(GUN_SHOT);
-			//shootCube.setPosition(oldSpot);
+			outs.clear();
+			outs << L"GAME OVER\nFINAL SCORE: " << score;
+			mTimer = outs.str();
+			return;
 		}
-		//if(shootCube.collided(&wall[i]))
-		//{
-		//	//shootCube.setPosition(oldSpot);
-		//	wall[i].setInActive();
-		//}
-	}
+
+		outs.precision(2);
+		outs << L"Time: " << timer << L"\n";
+		outs.precision(3);
+		outs << "Score: " << score;
+		mTimer = outs.str();
+
+		//store old position and reset it if collide, very hackish
+		shootCube.setVelocity(moveCube());
+		auto oldSpot = shootCube.getPosition();
+		D3DApp::updateScene(dt);
+
+		leftWall.update(dt);
+		//floor.update(dt);
+		rightWall.update(dt);
+		//ceiling.update(dt);
+
+		hitCubes->update(dt);
+		avoidCubes->update(dt);
+		shootCube.update(dt);
 	
-	int numHits = hitCubes->checkCollisions(shootCube);
+		int numHits = hitCubes->checkCollisions(shootCube);
+		score+=numHits;
 
-	score+=numHits;
+		int numBadHits = avoidCubes->checkCollisions(shootCube);
+		score-=numBadHits;
+		multiplier -= numBadHits;
 
-	int numBadHits = avoidCubes->checkCollisions(shootCube);
-	score-=numBadHits;
+		if(numHits>0)
+		{
+			audio->playCue(GUN_SHOT);
+		}
 
-	if(numHits>0)
-	{
-		audio->playCue(GUN_SHOT);
+		if(numBadHits>0)
+		{
+			audio->playCue(TARGET_SHATTER);
+		}
+
+		if(shootCube.getPosition().x<-18 || shootCube.getPosition().x>18 || shootCube.getPosition().z<-18 || shootCube.getPosition().z>18)
+		{
+			shootCube.setPosition(oldSpot);
+		}
 	}
-
-	if(numBadHits>0)
+	if(gamestate == Retry)
 	{
-		audio->playCue(TARGET_SHATTER);
+		outs.clear();
+		outs << L"Press Y to play again";
+		mTimer = outs.str();
 	}
-
-	if(shootCube.getPosition().x<-18 || shootCube.getPosition().x>18 || shootCube.getPosition().z<-18 || shootCube.getPosition().z>18)
-	{
-		shootCube.setPosition(oldSpot);
-	}
-
 	// Build the view matrix.
 	D3DXVECTOR3 pos(0.0f,50.0f,0.001f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
@@ -403,31 +402,43 @@ void ColoredCubeApp::drawScene()
 
 	//setting the color flip variable in the shader
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
-	
-	rightWall.draw(mView, mProj, mTech);
-	//floor.draw(mView, mProj, mTech);
-	leftWall.draw(mView, mProj, mTech);
-	//ceiling.draw(mView, mProj, mTech);
+	if(gamestate == Title)
+	{
+		RECT R = {GAME_WIDTH/2, GAME_HEIGHT/2, 0, 0};
+		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+	}
+	if(gamestate == Gameplay)
+	{
+		rightWall.draw(mView, mProj, mTech);
+		//floor.draw(mView, mProj, mTech);
+		leftWall.draw(mView, mProj, mTech);
+		//ceiling.draw(mView, mProj, mTech);
 
-	mfxFLIPVar->SetRawValue(&normalColor[0], 0, sizeof(int));
-	shootCube.draw(mView, mProj, mTech);
+		mfxFLIPVar->SetRawValue(&normalColor[0], 0, sizeof(int));
+		shootCube.draw(mView, mProj, mTech);
 
-	hitCubes->draw(mView,mProj,mTech);
+		hitCubes->draw(mView,mProj,mTech);
 
-	avoidCubes->draw(mView,mProj,mTech);
+		avoidCubes->draw(mView,mProj,mTech);
 
-	//for(int i = 0; i < 20; i++)
-	//{
-	//	tiles[i].draw(mView, mProj, mTech);
-	//	//wall[i].draw(mView,mProj,mTech);
-	//}
+		//for(int i = 0; i < 20; i++)
+		//{
+		//	tiles[i].draw(mView, mProj, mTech);
+		//	//wall[i].draw(mView,mProj,mTech);
+		//}
 
-	//draw the origin
-	//origin.draw(mView, mProj, mTech);
+		//draw the origin
+		//origin.draw(mView, mProj, mTech);
      
-	// We specify DT_NOCLIP, so we do not care about width/height of the rect.
-	RECT R = {5, 5, 0, 0};
-	mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+		// We specify DT_NOCLIP, so we do not care about width/height of the rect.
+		RECT R = {5, 5, 0, 0};
+		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+	}
+	if(gamestate == Retry)
+	{
+		RECT R = {GAME_WIDTH/2, GAME_HEIGHT/2, 0, 0};
+		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+	}
 	mSwapChain->Present(0, 0);
 }
 

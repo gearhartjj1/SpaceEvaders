@@ -34,13 +34,15 @@ const UINT GAME_HEIGHT = 600;               // height of game in pixels
 
 //audio stuff
 //C:\Users\GEARHARTJJ1\Documents\College\Junior year\Spring\Games 2\Game Jam 1 Gearhart Young
-const char WAVE_BANK[] = "C:\\Users\\GEARHARTJJ1\\Documents\\College\\Junior year\\Spring\\Games 2\\Project 1\\Project 1\\audio\\Win\\Wave Bank.xwb";
-const char SOUND_BANK[] = "C:\\Users\\GEARHARTJJ1\\Documents\\College\\Junior year\\Spring\\Games 2\\Project 1\\Project 1\\audio\\Win\\Sound Bank.xsb";
+const char WAVE_BANK[] = "C:\\Users\\YOUNGGG1\\Dropbox\\Games 2 Project 1\\audio\\Win\\Wave Bank.xwb";
+const char SOUND_BANK[] = "C:\\Users\\YOUNGGG1\\Dropbox\\Games 2 Project 1\\audio\\Win\\Sound Bank.xsb";
 //sound cues
 const char GUN_SHOT[] = "scifi003";
 const char TARGET_SHATTER[] = "battle003";
 const char MUSIC[] = "Chemistry";
 
+//Game State
+enum GameStates{Title, Gameplay, Retry };
 
 
 #endif
