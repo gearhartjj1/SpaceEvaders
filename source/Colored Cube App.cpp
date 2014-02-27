@@ -254,15 +254,15 @@ void ColoredCubeApp::initApp()
 	hitCubeData.minZ = -15;//min point where cubes appear in the z direction
 	hitCubeData.maxZ = 15;//max point where cubes appear in the z direction
 	hitCubeData.startY = -100;//starting point of cubes in the y direction
-	hitCubeData.endY = 40;//end point of cubes in the y direction, so where cubes disappear
+	hitCubeData.endY = 30;//end point of cubes in the y direction, so where cubes disappear
 	hitCubeData.startTime = 5;
 
 	hitCubes = new CubeHoard(hitCubeData);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
-	avoidCubeData.numBoxes = 100;
-	avoidCubeData.maxAtTime = 30;
-	avoidCubeData.minAtTime = 15;
+	avoidCubeData.numBoxes = 150;
+	avoidCubeData.maxAtTime = 40;
+	avoidCubeData.minAtTime = 30;
 	avoidCubeData.levelTime = 20;
 	avoidCubeData.fireInterval = 3;
 	avoidCubeData.minX = -20;
@@ -270,7 +270,7 @@ void ColoredCubeApp::initApp()
 	avoidCubeData.minZ = -20;
 	avoidCubeData.maxZ = 20;
 	avoidCubeData.startY = -100;
-	avoidCubeData.endY = 50;
+	avoidCubeData.endY = 30;
 
 	avoidCubes = new CubeHoard(avoidCubeData);
 	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
@@ -285,7 +285,7 @@ void ColoredCubeApp::initApp()
 	powerCubeData.minZ = -20;
 	powerCubeData.maxZ = 20;
 	powerCubeData.startY = -100;
-	powerCubeData.endY = 50;
+	powerCubeData.endY = 30;
 	powerCubeData.startTime = 10;
 	//adjust these Values!!!
 
@@ -345,7 +345,7 @@ void ColoredCubeApp::updateScene(float dt)
 		outs.clear();
 		outs2.clear();
 		outs2 << L"             Space Evaders\n\n\n";
-		outs2 << L"Avoid the blue cubes to survive.\nHit grey cubes for bigger multiplier.\nHit multicolored cubes for buff.\n";
+		outs2 << L"Avoid the blue cubes to survive.\nHit grey cubes for bigger multiplier.\nHit multicolored cubes for intensity reduction.\n";
 		outs2 << L"WS to move up and down.\nAD to move left and right.";
 		mIntro = outs2.str();
 		outs << L"Press E to play";
@@ -378,7 +378,7 @@ void ColoredCubeApp::updateScene(float dt)
 		shootCube.update(dt);
 	
 		int numHits = hitCubes->checkCollisions(shootCube);
-		if(multiplier<40)
+		if(multiplier<10)
 			multiplier += numHits;
 
 		int numBadHits = avoidCubes->checkCollisions(shootCube);
