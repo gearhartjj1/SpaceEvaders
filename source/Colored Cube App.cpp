@@ -55,6 +55,7 @@ private:
 	Quad quad1;
 	int foo[1];
 	int normalColor[1];
+	int specialColor[1];
 	Line line, line2, line3;
 	Box mBox, redBox, greenBox, shootBox;
 
@@ -96,6 +97,7 @@ private:
 
     float timer;
 	float lastSwitch;
+	float lastSwitchSpecialBlock;
     std::wstring mTimer;
 	HRESULT hr;
 
@@ -145,7 +147,9 @@ ColoredCubeApp::ColoredCubeApp(HINSTANCE hInstance)
 	score = 0;
 	foo[0] = 0;
 	normalColor[0] = 0;
+	specialColor[0] = 0;
 	lastSwitch = 100;
+	lastSwitchSpecialBlock = 100;
 	timer = 100;
 	gamestate = Title;
 	D3DXMatrixIdentity(&mView);
@@ -433,6 +437,17 @@ void ColoredCubeApp::drawScene()
 		}
 		score += multiplier;
 	}
+
+	if((lastSwitchSpecialBlock-timer)>0.1)
+	{
+		lastSwitchSpecialBlock = timer;
+		specialColor[0]++;
+		if(specialColor[0]>3)
+		{
+			specialColor[0] = 0;
+		}
+	}
+
 	// set the point to the shader technique
 	D3D10_TECHNIQUE_DESC techDesc;
 	mTech->GetDesc(&techDesc);
@@ -452,11 +467,14 @@ void ColoredCubeApp::drawScene()
 		//ceiling.draw(mView, mProj, mTech);
 
 		mfxFLIPVar->SetRawValue(&normalColor[0], 0, sizeof(int));
+
 		shootCube.draw(mView, mProj, mTech);
 
 		hitCubes->draw(mView,mProj,mTech);
 
 		avoidCubes->draw(mView,mProj,mTech);
+
+		mfxFLIPVar->SetRawValue(&specialColor[0], 0, sizeof(int));
 
 		powerCubes->draw(mView,mProj,mTech);
 
