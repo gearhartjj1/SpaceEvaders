@@ -322,7 +322,9 @@ void ColoredCubeApp::updateGameState()
 		score = 0;
 		foo[0] = 0;
 		normalColor[0] = 0;
+		specialColor[0] = 0;
 		lastSwitch = 100;
+		lastSwitchSpecialBlock = 100;
 		timer = 100;
 		gamestate = Gameplay;
 		audio->playCue(MUSIC);
