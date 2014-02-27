@@ -59,8 +59,11 @@ private:
 	Box mBox, redBox, greenBox, shootBox;
 
 	CubeHoard* hitCubes;
+	HoardData hitCubeData;
 	CubeHoard* avoidCubes;
+	HoardData avoidCubeData;
 	CubeHoard* powerCubes;
+	HoardData powerCubeData;
 
 	GameObject floor, leftWall, rightWall, ceiling;
 	GameObject tiles[20];
@@ -232,7 +235,6 @@ void ColoredCubeApp::initApp()
         }
     }
 
-	HoardData hitCubeData;
 	hitCubeData.numBoxes = 20;//total cubes available to the hoard
 	hitCubeData.maxAtTime = 6;//max number of cubes that can be sent at a time
 	hitCubeData.minAtTime = 2;//min number of cubes that can be sent at a time
@@ -249,7 +251,6 @@ void ColoredCubeApp::initApp()
 	hitCubes = new CubeHoard(hitCubeData);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
-	HoardData avoidCubeData;
 	avoidCubeData.numBoxes = 100;
 	avoidCubeData.maxAtTime = 30;
 	avoidCubeData.minAtTime = 15;
@@ -265,7 +266,6 @@ void ColoredCubeApp::initApp()
 	avoidCubes = new CubeHoard(avoidCubeData);
 	avoidCubes->init(&greenBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
 
-	HoardData powerCubeData;
 	powerCubeData.numBoxes = 10;
 	powerCubeData.maxAtTime = 5;
 	powerCubeData.minAtTime = 1;
@@ -282,6 +282,11 @@ void ColoredCubeApp::initApp()
 
 	powerCubes = new CubeHoard(powerCubeData);
 	powerCubes->init(&shootBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(1,1,1));
+
+	avoidCubes->reset();
+	hitCubes->reset();
+	powerCubes->reset();
+	shootCube.setPosition(Vector3(0,20,0));
 
 	audio->playCue(MUSIC);
 
@@ -302,16 +307,20 @@ void ColoredCubeApp::updateGameState()
 	if(gamestate == Title && (GetAsyncKeyState('E') & 0x8000))
 		gamestate = Gameplay;
 	if(multiplier <= 0)
+	{
 		gamestate = Retry;
+		audio->stopCue(MUSIC);
+	}
 	if(gamestate == Retry && (GetAsyncKeyState('Y') & 0x8000))
 	{
-		multiplier = 1;
+		multiplier = 5;
 		score = 0;
 		foo[0] = 0;
 		normalColor[0] = 0;
 		lastSwitch = 100;
 		timer = 100;
 		gamestate = Gameplay;
+		audio->playCue(MUSIC);
 	}
 }
 
@@ -356,6 +365,7 @@ void ColoredCubeApp::updateScene(float dt)
 		multiplier -= numBadHits;
 
 		int numPowerHits = powerCubes->checkCollisions(shootCube);
+		avoidCubeData.fireInterval*=1.1;
 		//do stuff with this!!!
 
 		if(numHits>0)
