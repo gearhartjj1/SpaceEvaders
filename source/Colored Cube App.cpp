@@ -263,8 +263,8 @@ void ColoredCubeApp::initApp()
 	avoidCubeData.numBoxes = 150;
 	avoidCubeData.maxAtTime = 40;
 	avoidCubeData.minAtTime = 30;
-	avoidCubeData.levelTime = 20;
-	avoidCubeData.fireInterval = 3;
+	avoidCubeData.levelTime = 10;
+	avoidCubeData.fireInterval = 2;
 	avoidCubeData.minX = -20;
 	avoidCubeData.maxX = 20;
 	avoidCubeData.minZ = -20;
@@ -331,6 +331,7 @@ void ColoredCubeApp::updateGameState()
 		lastSwitchSpecialBlock = 100;
 		levelSwitch = 100;
 		timer = 100;
+		level = 1;
 		gamestate = Gameplay;
 		audio->playCue(MUSIC);
 	}
@@ -457,7 +458,7 @@ void ColoredCubeApp::drawScene()
 		score += multiplier;
 	}
 
-	if((levelSwitch-timer)>20)
+	if((levelSwitch-timer)>10)
 	{
 		levelSwitch = timer;
 		level++;
