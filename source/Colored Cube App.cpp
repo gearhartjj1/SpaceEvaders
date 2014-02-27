@@ -188,7 +188,7 @@ void ColoredCubeApp::initApp()
 	zLine.setPosition(Vector3(0,0,0));
 	zLine.setRotationY(ToRadian(90));*/
 
-	shootCube.init(&shootBox,mfxWVPVar,sqrt(2.0f),Vector3(10,0,10),Vector3(0,0,0),0,Vector3(1,1,1));
+	shootCube.init(&shootBox,mfxWVPVar,sqrt(2.0f),Vector3(0,20,0),Vector3(0,0,0),0,Vector3(1,1,1));
 	//shootCube.setRotation(Vector3(ToRadian(-20),ToRadian(45),0));
 
 	leftWall.init(&redBox,mfxWVPVar,sqrt(2.0f),Vector3(20,0,0),Vector3(0,0,0),0,Vector3(0.5,20,100));
@@ -308,18 +308,10 @@ void ColoredCubeApp::updateScene(float dt)
 	if(gamestate == Gameplay)
 	{
 		timer -= dt;
-		if(timer<=0)
-		{
-			outs.clear();
-			outs << L"GAME OVER\nFINAL SCORE: " << score;
-			mTimer = outs.str();
-			return;
-		}
-
 		outs.precision(2);
-		outs << L"Time: " << timer << L"\n";
+		outs << L"Score: " << score << L"\n";
 		outs.precision(3);
-		outs << "Score: " << score;
+		outs << "Multiplier: " << multiplier;
 		mTimer = outs.str();
 
 		//store old position and reset it if collide, very hackish
@@ -337,10 +329,9 @@ void ColoredCubeApp::updateScene(float dt)
 		shootCube.update(dt);
 	
 		int numHits = hitCubes->checkCollisions(shootCube);
-		score+=numHits;
+		multiplier += numHits;
 
 		int numBadHits = avoidCubes->checkCollisions(shootCube);
-		score-=numBadHits;
 		multiplier -= numBadHits;
 
 		if(numHits>0)
@@ -353,7 +344,7 @@ void ColoredCubeApp::updateScene(float dt)
 			audio->playCue(TARGET_SHATTER);
 		}
 
-		if(shootCube.getPosition().x<-18 || shootCube.getPosition().x>18 || shootCube.getPosition().z<-18 || shootCube.getPosition().z>18)
+		if(shootCube.getPosition().x<-16 || shootCube.getPosition().x>16 || shootCube.getPosition().z<-12 || shootCube.getPosition().z>12)
 		{
 			shootCube.setPosition(oldSpot);
 		}
@@ -363,6 +354,9 @@ void ColoredCubeApp::updateScene(float dt)
 		outs.clear();
 		outs << L"Press Y to play again";
 		mTimer = outs.str();
+		avoidCubes->reset();
+		hitCubes->reset();
+		shootCube.setPosition(Vector3(0,20,0));
 	}
 	// Build the view matrix.
 	D3DXVECTOR3 pos(0.0f,50.0f,0.001f);
@@ -404,7 +398,7 @@ void ColoredCubeApp::drawScene()
 	mfxFLIPVar->SetRawValue(&foo[0], 0, sizeof(int));
 	if(gamestate == Title)
 	{
-		RECT R = {GAME_WIDTH/2, GAME_HEIGHT/2, 0, 0};
+		RECT R = {GAME_WIDTH/2 - 60, GAME_HEIGHT/2, 0, 0};
 		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
 	}
 	if(gamestate == Gameplay)
@@ -436,8 +430,8 @@ void ColoredCubeApp::drawScene()
 	}
 	if(gamestate == Retry)
 	{
-		RECT R = {GAME_WIDTH/2, GAME_HEIGHT/2, 0, 0};
-		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, BLUE);
+		RECT R = {GAME_WIDTH/2 - 75, GAME_HEIGHT/2, 0, 0};
+		mFont->DrawText(0, mTimer.c_str(), -1, &R, DT_NOCLIP, RED);
 	}
 	mSwapChain->Present(0, 0);
 }
