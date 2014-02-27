@@ -243,6 +243,7 @@ void ColoredCubeApp::initApp()
 	hitCubeData.maxZ = 15;//max point where cubes appear in the z direction
 	hitCubeData.startY = -100;//starting point of cubes in the y direction
 	hitCubeData.endY = 40;//end point of cubes in the y direction, so where cubes disappear
+	hitCubeData.startTime = 5;
 
 	hitCubes = new CubeHoard(hitCubeData);
 	hitCubes->init(&redBox,mfxWVPVar,sqrt(4.0f),Vector3(0,0,0),Vector3(0,100,0),70,Vector3(2,2,2));
